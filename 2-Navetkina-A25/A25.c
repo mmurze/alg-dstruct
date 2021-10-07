@@ -5,7 +5,7 @@
 #include "A25.h"
 
 
-node_t* AddnewwNodeToEnd(node_t* head, node_t* neww)          //add ne
+node_t* AddnewwNodeToEnd(node_t* head, node_t* neww)        //add need node to the end of list
 {
 	if (head == NULL)
 	{
@@ -35,7 +35,7 @@ node_t* AddnewwNodeToEnd(node_t* head, node_t* neww)          //add ne
 	return head;
 }
 
-int WriteStringToNode(char* string, node_t* neww)                      //функция читает строкy и возвращает 0 в случае успеха, и -1 при ошибке
+int WriteStringToNode(char* string, node_t* neww)             //write string to node
 {
 	if (string == NULL)
 	{
@@ -52,7 +52,7 @@ int WriteStringToNode(char* string, node_t* neww)                      //функция
 	char lastName[MAX_STR], name[MAX_STR], middleName[MAX_STR];
 	char t;
 
-	while ((t = string[i]) != ' ')                        //читаем строку до первого пробела
+	while ((t = string[i]) != ' ')                            //read string until meeting ewhitespace
 	{
 		if (i > MAX_STR)
 		{
@@ -63,7 +63,7 @@ int WriteStringToNode(char* string, node_t* neww)                      //функция
 		i++;
 	}
 	lastName[i] = '\0';
-	i++;                                                  //пропускаем пробел
+	i++;                                                      //it's for missing empty space
 
 	while ((t = string[i]) != ' ')
 	{
@@ -95,14 +95,14 @@ int WriteStringToNode(char* string, node_t* neww)                      //функция
 	else
 		middleName[j] = '\0';
 
-	strcpy(neww->person.lastName, lastName);
+	strcpy(neww->person.lastName, lastName);                   //add strings to node
 	strcpy(neww->person.name, name);
 	strcpy(neww->person.middleName, middleName);
 
 	return SUCCESS;
 }
 
-node_t* AddToList(node_t* head, node_t* neww)
+node_t* AddToList(node_t* head, node_t* neww)                  //write the node to the right place
 {
 	if (neww == NULL)
 	{
@@ -111,7 +111,7 @@ node_t* AddToList(node_t* head, node_t* neww)
 	}
 
 	node_t* tmp = head;
-	if (tmp == NULL)        //head пустой и neww становится первым узлом
+	if (tmp == NULL)                                           //head пустой и neww становится первым узлом
 	{
 		neww->next = NULL;
 		head = neww;
@@ -127,7 +127,7 @@ node_t* AddToList(node_t* head, node_t* neww)
 
 		if (lastName < 0)
 		{
-			if (last == NULL) //если tmp - это head, то значит мы должны вставить его в начало списка
+			if (last == NULL)                                  //if tmp - is head, it's mean that we need add newwNode to the top of the list
 			{
 				neww->next = tmp;
 				head = neww;
@@ -139,7 +139,7 @@ node_t* AddToList(node_t* head, node_t* neww)
 		}
 		else if (lastName == 0 && name < 0)
 		{
-			if (last == NULL) //если tmp - это head, то значит мы должны вставить его в начало списка
+			if (last == NULL)                                 //if tmp - is head, it's mean that we need add newwNode to the top of the list
 			{
 				neww->next = tmp;
 				head = neww;
@@ -151,7 +151,7 @@ node_t* AddToList(node_t* head, node_t* neww)
 		}
 		else if (lastName == 0 && name == 0 && middleName < 0)
 		{
-			if (last == NULL) //если tmp - это head, то значит мы должны вставить его в начало списка
+			if (last == NULL)                                 //if tmp - is head, it's mean that we need add newwNode to the top of the list
 			{
 				neww->next = tmp;
 				head = neww;
@@ -161,15 +161,15 @@ node_t* AddToList(node_t* head, node_t* neww)
 			neww->next = tmp;
 			return head;
 		}
-		last = tmp;        // переходим на следующий узел (в этом совпадений нет)
+		last = tmp;                                           //  go to the next node (there is no coincidences) 
 		tmp = tmp->next;
 	}
-	last->next = neww;     //если он дошел до сюда, то поулчается он встает в конец списка
+	last->next = neww;                                        // if we are here, so newwNode is added to the end of the list  
 	neww->next = NULL;
 	return head;
 }
 
-int FreeList(node_t* head)
+int FreeList(node_t* head)    
 {
 	if (head != NULL)
 	{
@@ -203,7 +203,7 @@ node_t* Compare(node_t* head, char* findLastname, char* findName, char* findMidd
 	{
 		int matchL = 0;
 		int i = 0;
-		for (i, matchL; *(findLastname + i) != '\0'; i++)      //compair lastname and needed string
+		for (i, matchL; *(findLastname + i) != '\0'; i++)             //compair lastname and needed string
 			if (findLastname[i] == *(tmp->person.lastName + i))
 				matchL++;
 		if (matchL == i)
@@ -212,7 +212,7 @@ node_t* Compare(node_t* head, char* findLastname, char* findName, char* findMidd
 			matchL = 0;
 
 		int matchN = 0;
-		for (i = 0, matchN; *(findName + i) != '\0'; i++)      //compair name and needed string
+		for (i = 0, matchN; *(findName + i) != '\0'; i++)             //compair name and needed string
 			if (findName[i] == *(tmp->person.name + i))
 				matchN++;
 		if (matchN == i)
@@ -221,7 +221,7 @@ node_t* Compare(node_t* head, char* findLastname, char* findName, char* findMidd
 			matchN = 0;
 
 		int matchM = 0;
-		for (i = 0, matchM; *(findMiddlename + i) != '\0'; i++)      //compair middlename and needed string
+		for (i = 0, matchM; *(findMiddlename + i) != '\0'; i++)       //compair middlename and needed string
 			if (findMiddlename[i] == *(tmp->person.middleName + i))
 				matchM++;
 		if (matchM == i)
@@ -229,7 +229,7 @@ node_t* Compare(node_t* head, char* findLastname, char* findName, char* findMidd
 		else
 			matchN = 0;
 
-		if (matchN * matchL * matchM)          //если все сходится
+		if (matchN * matchL * matchM)                                 //if all of this match
 			needed = AddnewwNodeToEnd(needed, tmp);
 		tmp = tmp->next;
 	}
