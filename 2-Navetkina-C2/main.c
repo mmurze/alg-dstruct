@@ -6,6 +6,8 @@
 #include <assert.h>
 #pragma warning(disable: 4996)
 
+float MEMORY = 0;
+
 typedef struct {
 	int own;
 	int* add;
@@ -24,16 +26,16 @@ node* ListCreate(int n)
 	return list;
 }
 
-int searchI(int* list, int n, int count) 
+int searchI(int* list, int n, int count)
 {
 	for (int i = 0; i < count; i++)
 		if (list[i] == n) return 0;
 	return n;
 }
 
-void AddI(node* list, int i, int n) 
+void AddI(node* list, int i, int n)
 {
-	if (list[i].add == NULL) 
+	if (list[i].add == NULL)
 	{
 		list[i].add = malloc(sizeof(int));
 		list[i].add[0] = n;
@@ -44,8 +46,9 @@ void AddI(node* list, int i, int n)
 	if (isInadd)
 	{
 		int count = list[i].count + 1;
+		MEMORY += count;
 		list[i].add = realloc(list[i].add, sizeof(int) * count);
-		if (list[i].add != NULL) 
+		if (list[i].add != NULL)
 		{
 			list[i].add[count - 1] = n;
 			list[i].count++;
@@ -54,7 +57,7 @@ void AddI(node* list, int i, int n)
 	}
 }
 
-void ReadList(FILE * file, node* list, int n) 
+void ReadList(FILE* file, node* list, int n)
 {
 	int j = 0, k = 0;
 	while (feof(file) == 0)
@@ -68,20 +71,20 @@ void ReadList(FILE * file, node* list, int n)
 	return;
 }
 
-void FreeList(node* list, int n) 
+void FreeList(node* list, int n)
 {
-	for (int i = 0; i < n; i++) 
+	for (int i = 0; i < n; i++)
 		free(list[i].add);
-	
+
 	free(list);
 }
 
-void DFS(node* list, int n, int point, int* res, int* res_count) 
+void DFS(node* list, int n, int point, int* res, int* res_count)
 {
 	for (int i = 0; i < list[point].count; i++)
 	{
 		int new_point = searchI(res, list[point].add[i], *res_count);
-		if (new_point) 
+		if (new_point)
 		{
 			res[*res_count] = new_point;
 			(*res_count)++;
@@ -96,11 +99,13 @@ void PrintIarr(int* res, int count)
 		printf("%d ", res[i]);
 }
 
+
+//n is number of vertices
 void stress_test(int n) {
 
 	node* list = ListCreate(n);
 	int width = 40;
-	for (int i = 0; i < n; i++) 
+	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
@@ -108,6 +113,7 @@ void stress_test(int n) {
 			AddI(list, j, i);
 		}
 	}
+	MEMORY += n;
 	int* result_list = malloc(sizeof(int) * n);
 	if (result_list == NULL)
 		return;
@@ -118,22 +124,28 @@ void stress_test(int n) {
 	DFS(list, n, start, result_list, &result_count);
 	double time = (double)((double)clock() - start_time) / CLOCKS_PER_SEC;
 
-	printf("%lf\n", time);
+	FILE* f = fopen("data.txt", "w");
+	fprintf(f, "time is: %lf\n", time);
+	fprintf(f, "busy memory is: %lf KB\n", (MEMORY * 4) / 1024);
+	fprintf(f, "n is: %d\n", n);
 
 	free(list);
 	free(result_list);
 }
 int main(void) {
-	stress_test(5000);
+	
+	//stress_test(200000);
 
 	int n = 0, i = 0, res_count = 1;
 	int* res = NULL;
+
 	FILE* file = fopen("test.txt", "r");
 	//FILE* file  = stdin;
 	if (fscanf(file, "%d", &n) < 0) {
 		perror("Scan failed!");
 		return 1;
 	}
+
 	node* list = ListCreate(n);
 	if (!list) return 1;
 	ReadList(file, list, n);
