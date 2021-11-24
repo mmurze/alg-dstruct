@@ -17,6 +17,11 @@ typedef struct {
 node* ListCreate(int n)
 {
 	node* list = malloc(sizeof(node) * n);
+	if (list == NULL)
+	{
+		printf("memory loss");
+		abort();
+	}
 	for (int i = 0; i < n; i++)
 	{
 		list[i].add = NULL;
@@ -38,6 +43,11 @@ void AddI(node* list, int i, int n)
 	if (list[i].add == NULL)
 	{
 		list[i].add = malloc(sizeof(int));
+		if (list[i].add == NULL)
+		{
+			printf("memory loss in AddI : %d\n", list[i].add);
+			abort();
+		}
 		list[i].add[0] = n;
 		list[i].count++;
 	}
@@ -53,7 +63,11 @@ void AddI(node* list, int i, int n)
 			list[i].add[count - 1] = n;
 			list[i].count++;
 		}
-		else perror("Realloc error!\n");
+		else
+		{
+			printf("Realloc error in AddI : %d\n", list[i].add);
+			abort();
+		}
 	}
 }
 
@@ -75,7 +89,6 @@ void FreeList(node* list, int n)
 {
 	for (int i = 0; i < n; i++)
 		free(list[i].add);
-
 	free(list);
 }
 
@@ -116,6 +129,11 @@ void stress_test(int n) {
 	MEMORY += n;
 	int* result_list = malloc(sizeof(int) * n);
 	if (result_list == NULL)
+	{
+		printf("memory loss in stress test\n");
+		abort();
+	}
+	if (result_list == NULL)
 		return;
 
 	result_list[0] = 0;
@@ -150,7 +168,13 @@ int main(void) {
 	if (!list) return 1;
 	ReadList(file, list, n);
 	res = malloc(sizeof(int) * n);
-	if (res) {
+	if (res == NULL)
+	{
+		printf("malloc error in main\n");
+		abort();
+	}
+	else
+	{
 		res[0] = 0;
 		DFS(list, n, 0, res, &res_count);
 		PrintIarr(res, res_count);
