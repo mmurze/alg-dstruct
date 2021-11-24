@@ -9,3 +9,5 @@ n is: 50000
 time is: 1.836000
 busy memory is: 1968828 KB
 n is: 5000
+
+n is number of vertices
